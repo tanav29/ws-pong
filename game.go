@@ -148,6 +148,15 @@ func (h *hub) assignToRoom(c *client) {
 		r.players[1] = c
 		other.room, other.side = r, 0
 		c.room, c.side = r, 1
+
+		// The waiting player's client already received a "hello" with
+		// side=-1.  Send an updated one so they know they are now a player.
+		hello := wsOut{Type: "hello", Data: wsOutHello{ClientID: other.id, RoomID: r.id, Side: 0, W: worldW, H: worldH}}
+		b, _ := json.Marshal(hello)
+		select {
+		case other.send <- b:
+		default:
+		}
 		return
 	}
 

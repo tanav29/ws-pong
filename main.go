@@ -13,12 +13,12 @@ import (
 )
 
 var allowedOrigins = map[string]struct{}{
-	"http://localhost:8080":  {},
-	"https://pong.tanav.me":  {},
-	"http://pong.tanav.me":   {},
-	"https://localhost:8080": {},
-	"http://127.0.0.1:8080":  {},
-	"https://127.0.0.1:8080": {},
+	"http://localhost:80":   {},
+	"https://pong.tanav.me": {},
+	"http://pong.tanav.me":  {},
+	"https://localhost:80":  {},
+	"http://127.0.0.1:80":   {},
+	"https://127.0.0.1:80":  {},
 }
 
 var wsUpgrader = websocket.Upgrader{
@@ -192,9 +192,9 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static"))))
 	http.HandleFunc("/ws", handleWS)
 
-	port := "8080"
-	if p := os.Getenv("PORT"); p != "" {
-		port = p
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "80"
 	}
 
 	addr := ":" + port
